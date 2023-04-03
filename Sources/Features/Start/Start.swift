@@ -84,7 +84,7 @@ struct StartView: View {
     var body: some View {
         
         ZStack {
-            GodRays(colors: RayzApp.ColorTheme.default.rayColors)
+            GodRays(colors: ColorTheme.default.rayColors)
             
             WithViewStore(store, observe: \.glowAppearAnimation) { viewStore in
                 Particles(color: Color(.white))
@@ -115,9 +115,9 @@ struct StartView: View {
                 }
             }
             
-            RayzApp.BottomBar {
-                WithViewStore(store, observe: \.buttonAppearAnimation) { viewStore in
-                    RayzApp.CapsuleIconButton(source: .system(name: "camera.fill")) {
+            WithViewStore(store, observe: \.buttonAppearAnimation) { viewStore in
+                BottomBar {
+                    CapsuleIconButton(source: .system(name: "camera.fill")) {
                         viewStore.send(.delegate(.captureButtonTapped))
                     }.opacity(viewStore.state.opacity)
                     .scaleEffect(viewStore.state.scale)

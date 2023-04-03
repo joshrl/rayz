@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0324E31529D7D8C600CCD195 /* Composition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0324E31429D7D79900CCD195 /* Composition.swift */; };
+		0324E31629D7D8CA00CCD195 /* MaskedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0324E31329D7D79900CCD195 /* MaskedImageView.swift */; };
+		0324E31729D7DBF500CCD195 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 034CB60829D608CC0011751F /* Preview Assets.xcassets */; };
 		033B4A3B29D6083A00BC4EF6 /* RayzApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033B4A3A29D6083A00BC4EF6 /* RayzApp.swift */; };
 		033B4A3F29D6083B00BC4EF6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 033B4A3E29D6083B00BC4EF6 /* Assets.xcassets */; };
 		033B4A4D29D6083B00BC4EF6 /* RayzTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033B4A4C29D6083B00BC4EF6 /* RayzTests.swift */; };
@@ -27,6 +30,8 @@
 		034CB63729D625D20011751F /* ColorTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034CB63629D625D20011751F /* ColorTheme.swift */; };
 		034CB63A29D626570011751F /* Butttons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034CB63929D626570011751F /* Butttons.swift */; };
 		034CB64029D626FD0011751F /* ExpandableGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034CB63F29D626FD0011751F /* ExpandableGroup.swift */; };
+		03568C9429DBCF3A00FE3F2C /* MaskedImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03568C9329DBCF3A00FE3F2C /* MaskedImage.swift */; };
+		03568C9629DBCF5C00FE3F2C /* Transformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03568C9529DBCF5C00FE3F2C /* Transformation.swift */; };
 		03F9F9A729D65A3300C91CE3 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F9F9A629D65A3300C91CE3 /* ImagePicker.swift */; };
 		03F9F9A929D66BBB00C91CE3 /* Capture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F9F9A829D66BBB00C91CE3 /* Capture.swift */; };
 /* End PBXBuildFile section */
@@ -42,6 +47,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0324E31329D7D79900CCD195 /* MaskedImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaskedImageView.swift; sourceTree = "<group>"; };
+		0324E31429D7D79900CCD195 /* Composition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Composition.swift; sourceTree = "<group>"; };
 		033B4A3729D6083A00BC4EF6 /* Rayz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Rayz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		033B4A3A29D6083A00BC4EF6 /* RayzApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RayzApp.swift; sourceTree = "<group>"; };
 		033B4A3E29D6083B00BC4EF6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -66,6 +73,8 @@
 		034CB63629D625D20011751F /* ColorTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorTheme.swift; sourceTree = "<group>"; };
 		034CB63929D626570011751F /* Butttons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Butttons.swift; sourceTree = "<group>"; };
 		034CB63F29D626FD0011751F /* ExpandableGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandableGroup.swift; sourceTree = "<group>"; };
+		03568C9329DBCF3A00FE3F2C /* MaskedImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaskedImage.swift; sourceTree = "<group>"; };
+		03568C9529DBCF5C00FE3F2C /* Transformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transformation.swift; sourceTree = "<group>"; };
 		03F9F9A629D65A3300C91CE3 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		03F9F9A829D66BBB00C91CE3 /* Capture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Capture.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -150,7 +159,6 @@
 			isa = PBXGroup;
 			children = (
 				033B4A3A29D6083A00BC4EF6 /* RayzApp.swift */,
-				034CB63829D6262C0011751F /* UI */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -166,6 +174,8 @@
 		034CB60E29D615B50011751F /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				034CB63629D625D20011751F /* ColorTheme.swift */,
+				034CB63929D626570011751F /* Butttons.swift */,
 				034CB62929D624250011751F /* Glow.swift */,
 				034CB62B29D624250011751F /* GodRays.swift */,
 				034CB62A29D624250011751F /* Particles.swift */,
@@ -210,6 +220,10 @@
 		034CB61429D61B960011751F /* Composition */ = {
 			isa = PBXGroup;
 			children = (
+				0324E31429D7D79900CCD195 /* Composition.swift */,
+				0324E31329D7D79900CCD195 /* MaskedImageView.swift */,
+				03568C9329DBCF3A00FE3F2C /* MaskedImage.swift */,
+				03568C9529DBCF5C00FE3F2C /* Transformation.swift */,
 			);
 			path = Composition;
 			sourceTree = "<group>";
@@ -246,15 +260,6 @@
 				034CB61B29D61CFD0011751F /* MaskMaker.swift */,
 			);
 			path = MaskMaker;
-			sourceTree = "<group>";
-		};
-		034CB63829D6262C0011751F /* UI */ = {
-			isa = PBXGroup;
-			children = (
-				034CB63629D625D20011751F /* ColorTheme.swift */,
-				034CB63929D626570011751F /* Butttons.swift */,
-			);
-			path = UI;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -344,6 +349,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0324E31729D7DBF500CCD195 /* Preview Assets.xcassets in Resources */,
 				033B4A3F29D6083B00BC4EF6 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -366,14 +372,18 @@
 				034CB64029D626FD0011751F /* ExpandableGroup.swift in Sources */,
 				034CB61D29D622670011751F /* MaskMaker.swift in Sources */,
 				03F9F9A729D65A3300C91CE3 /* ImagePicker.swift in Sources */,
+				0324E31529D7D8C600CCD195 /* Composition.swift in Sources */,
 				034CB62F29D624840011751F /* Rainbow.swift in Sources */,
+				0324E31629D7D8CA00CCD195 /* MaskedImageView.swift in Sources */,
 				033B4A3B29D6083A00BC4EF6 /* RayzApp.swift in Sources */,
+				03568C9629DBCF5C00FE3F2C /* Transformation.swift in Sources */,
 				034CB61E29D6226A0011751F /* DIS08.mlpackage in Sources */,
 				034CB62D29D624810011751F /* Glow.swift in Sources */,
 				034CB63029D624840011751F /* Vignette.swift in Sources */,
 				03F9F9A929D66BBB00C91CE3 /* Capture.swift in Sources */,
 				034CB61229D61A590011751F /* Root.swift in Sources */,
 				034CB62E29D624840011751F /* GodRays.swift in Sources */,
+				03568C9429DBCF3A00FE3F2C /* MaskedImage.swift in Sources */,
 				034CB63A29D626570011751F /* Butttons.swift in Sources */,
 				034CB63729D625D20011751F /* ColorTheme.swift in Sources */,
 				034CB63329D624840011751F /* Particles.swift in Sources */,
@@ -520,12 +530,13 @@
 				CODE_SIGN_ENTITLEMENTS = Resources/Rayz.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Resources/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Resources/Preview Content/\"";
 				DEVELOPMENT_TEAM = 54AU8R62CV;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Resources/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app uses your camera to capture photos that effects can be added to.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -561,12 +572,13 @@
 				CODE_SIGN_ENTITLEMENTS = Resources/Rayz.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Resources/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Resources/Preview Content/\"";
 				DEVELOPMENT_TEAM = 54AU8R62CV;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Resources/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app uses your camera to capture photos that effects can be added to.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;

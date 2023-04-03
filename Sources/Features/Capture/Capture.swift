@@ -15,7 +15,7 @@ import SwiftUI
 struct Capture: Reducer {
     
     struct State: Equatable {
-        var image: UIImage?
+        var image: UIImage = UIImage()
     }
     
     enum Action: Equatable {
@@ -23,7 +23,7 @@ struct Capture: Reducer {
     }
     
     enum DelegateAction: Equatable {
-        case setImage(UIImage?)
+        case setImage(UIImage)
     }
     
     var body: some ReducerOf<Self> {
@@ -39,9 +39,13 @@ struct CaptureView: View {
     var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
             
+            // Bind to delegate action
             let binding = viewStore.binding(get: \.image,
-                                            send: { Capture.Action.delegate(.setImage($0)) })
-            ImagePicker(selectedImage:binding).edgesIgnoringSafeArea(.all)
+                                            send: { image in
+                Capture.Action.delegate(.setImage(image))
+            })
+            
+            ImagePicker(selectedImage: binding).edgesIgnoringSafeArea(.all)
             
         }
     }

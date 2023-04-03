@@ -13,8 +13,9 @@ struct ImagePicker: UIViewControllerRepresentable {
  
     var sourceType: UIImagePickerController.SourceType = .camera
  
-    @Binding var selectedImage: UIImage?
-
+    @Binding var selectedImage: UIImage
+    @Environment(\.dismiss) var dismiss
+    
     func makeUIViewController(context: UIViewControllerRepresentableContext<ImagePicker>) -> UIImagePickerController {
  
         let imagePicker = UIImagePickerController()
@@ -48,9 +49,8 @@ struct ImagePicker: UIViewControllerRepresentable {
             
             if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
                 parent.selectedImage = image
-            } else {
-                parent.selectedImage = nil
             }
+            parent.dismiss()
         }
     }
 }

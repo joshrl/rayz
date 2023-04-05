@@ -8,147 +8,178 @@
 import Foundation
 import SwiftUI
 
-struct ExpandableGroup<Toggle: View, Views>: View {
+
+enum ExpandDirection {
+    case up, right, down, left
+}
+
+struct ExpandableGroup<Toggle: View, ExpandedView: View>: View {
     
-    @State var isExpanded = false
-    
+    var isExpanded: Binding<Bool>
     let direction: ExpandDirection
-    let spacing: CGFloat
-    let toggle: (Binding<Bool>) -> Toggle
-    let expandedContent: (Binding<Bool>) -> TupleView<Views>
-    
-    enum ExpandDirection {
-        case up, right, down, left
-    }
+    let cellSize: CGFloat
+    let toggle: () -> Toggle
+    let expandedContent: () -> ExpandedView
     
     init(
+        _ isExpanded: Binding<Bool>,
         direction: ExpandDirection = .up,
-        spacing: CGFloat = 95,
-        @ViewBuilder toggle: @escaping (Binding<Bool>) -> Toggle,
-        @ViewBuilder expanded: @escaping (Binding<Bool>) -> TupleView<Views>) {
+        cellSize: CGFloat = 95,
+        @ViewBuilder toggle: @escaping () -> Toggle,
+        @ViewBuilder expanded: @escaping () -> ExpandedView) {
+            self.isExpanded = isExpanded
             self.direction = direction
-            self.spacing = spacing
+            self.cellSize = cellSize
             self.toggle = toggle
             self.expandedContent = expanded
     }
     
     var body: some View {
         
-        let expandedContent = expandedContent($isExpanded).views
+        let expandedContent = expandedContent()
         
-        ZStack {
-            Group {
-                ForEach (Array(expandedContent.enumerated()), id: \.offset) { index, view in
+        Extract(expandedContent) { views in
+
+            ZStack(alignment: .bottom) {
+
+                ForEach (Array(views.enumerated()), id: \.offset) { index, view in
                     view
-                        .opacity(isExpanded ? 1 : 0)
+                        .opacity(isExpanded.wrappedValue ? 1 : 0)
                         .offset(offset(at: index))
+                        
                 }
-                
-                toggle($isExpanded)
+                toggle()
+
             }
-            
+        
         }
     }
     
     private func offset(at index: Int) -> CGSize {
-        guard isExpanded else {
+        guard isExpanded.wrappedValue else {
             return .zero
         }
         
         switch (direction) {
         case .down:
             return .init(width: 0,
-                         height: spacing * CGFloat(index) + spacing)
+                         height: cellSize * CGFloat(index) + cellSize)
         case .up:
             return .init(width: 0,
-                         height: -spacing * CGFloat(index) - spacing)
+                         height: -cellSize * CGFloat(index) - cellSize)
         case .left:
-            return .init(width: -spacing * CGFloat(index) - spacing,
+            return .init(width: -cellSize * CGFloat(index) - cellSize,
                          height: 0)
         case .right:
-            return .init(width: spacing * CGFloat(index) + spacing,
+            return .init(width: cellSize * CGFloat(index) + cellSize,
                          height: 0)
             
         }
         
     }
     
-    
 }
 
 
-// See https://stackoverflow.com/questions/64238485/how-to-loop-over-viewbuilder-content-subviews-in-swiftui
-extension TupleView {
-    fileprivate var views: [AnyView] {
-        makeArray(from: value)
+struct StatefulPreviewWrapper<Value, Content: View>: View {
+    @State var value: Value
+    var content: (Binding<Value>) -> Content
+
+    var body: some View {
+        content($value)
     }
-    
-    private struct GenericView {
-        let body: Any
-        
-        var anyView: AnyView? {
-            AnyView(_fromValue: body)
-        }
-    }
-    
-    private func makeArray<Tuple>(from tuple: Tuple) -> [AnyView] {
-        func convert(child: Mirror.Child) -> AnyView? {
-            withUnsafeBytes(of: child.value) { ptr -> AnyView? in
-                let binded = ptr.bindMemory(to: GenericView.self)
-                return binded.first?.anyView
-            }
-        }
-        
-        let tupleMirror = Mirror(reflecting: tuple)
-        return tupleMirror.children.compactMap(convert)
+
+    init(_ value: Value, content: @escaping (Binding<Value>) -> Content) {
+        self._value = State(wrappedValue: value)
+        self.content = content
     }
 }
-
 
 struct ExpandableGroup_Previews: PreviewProvider {
     
     static var previews: some View {
         
         VStack {
+            
+            
             Spacer()
-            HStack {
+            
+            BottomBar {
                 Spacer()
-                ExpandableGroup { isExpanded in
-                    Button(action: {
-                        withAnimation(.spring(dampingFraction: isExpanded.wrappedValue ? 0.8 : 0.5)) {
-                            isExpanded.wrappedValue = !isExpanded.wrappedValue
-                        }
-                        
-                    }) {
-                        Text("Fred").font(.largeTitle)
-
-                    }
-                } expanded: { isExpanded in
-                    Button(action: {
-                        isExpanded.wrappedValue.toggle()
-                    }) {
-                        Text("Wilma").font(.largeTitle)
-                    }
-                    Button(action: {
-                        isExpanded.wrappedValue.toggle()
-                    }) {
-                        Text("Wilma").font(.largeTitle)
-                    }
-                    Button(action: {
-                        isExpanded.wrappedValue.toggle()
-                    }) {
-                        Text("Wilma").font(.largeTitle)
-                    }
-                }.background(Color.white)
-                
+                testExpando(.left, cellSize: 130)
+            }
+            
+            
+            Spacer()
+            BottomBar {
+                testExpando(.down)
                 Spacer()
             }
+            
+            Spacer()
+            BottomBar {
+                testExpando(.right, cellSize: 130)
+                Spacer()
+            }
+            
+            BottomBar {
+                testExpando(.up)
+                Spacer()
+            }
+        }.overlay {
+            
         }
-        .padding()
-        .background(.white)
-        .tint(Color.gray.opacity(0.9))
+        
         
     }
+    
+    static func testExpando(_ dir: ExpandDirection, cellSize: CGFloat = 95) -> some View {
+        
+        StatefulPreviewWrapper(false) { isOpen in
+            
+            ExpandableGroup(isOpen, direction: dir, cellSize: cellSize) {
+                Button(action: {
+                    withAnimation {
+                        isOpen.wrappedValue.toggle()
+                    }
+                }) {
+                    Text("Fred")
+                        .padding()
+                        .font(.largeTitle)
+                        .foregroundColor(.white)
+                        .background(Color.red)
+                    
+                }
+            } expanded: {
+                Button(action: {
+                }) {
+                    Text("Wilma")
+                        .padding()
+                        .font(.largeTitle)
+                        .foregroundColor(.white)
+                        .background(Color.red)
+                }
+                Button(action: {
+                }) {
+                    Text("Wilma")
+                        .padding()
+                        .font(.largeTitle)
+                        .foregroundColor(.white)
+                        .background(Color.red)
+                }
+                Button(action: {
+                }) {
+                    Text("Wilma")
+                        .padding()
+                        .font(.largeTitle)
+                        .foregroundColor(.white)
+                        .background(Color.red)
+                }
+            }
+        }
+    }
+    
+    
 }
 
 

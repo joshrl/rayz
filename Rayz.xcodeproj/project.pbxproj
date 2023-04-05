@@ -32,6 +32,10 @@
 		034CB64029D626FD0011751F /* ExpandableGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034CB63F29D626FD0011751F /* ExpandableGroup.swift */; };
 		03568C9429DBCF3A00FE3F2C /* MaskedImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03568C9329DBCF3A00FE3F2C /* MaskedImage.swift */; };
 		03568C9629DBCF5C00FE3F2C /* Transformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03568C9529DBCF5C00FE3F2C /* Transformation.swift */; };
+		03E43D1C29DC510A005EF20B /* CompositionEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E43D1B29DC510A005EF20B /* CompositionEditor.swift */; };
+		03E43D3429DC5C6A005EF20B /* ExtractMulti.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E43D3229DC5C6A005EF20B /* ExtractMulti.swift */; };
+		03E43D3529DC5C6A005EF20B /* Extract.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E43D3129DC5C6A005EF20B /* Extract.swift */; };
+		03E43D3629DC5C6A005EF20B /* Extractable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E43D3329DC5C6A005EF20B /* Extractable.swift */; };
 		03F9F9A729D65A3300C91CE3 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F9F9A629D65A3300C91CE3 /* ImagePicker.swift */; };
 		03F9F9A929D66BBB00C91CE3 /* Capture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F9F9A829D66BBB00C91CE3 /* Capture.swift */; };
 /* End PBXBuildFile section */
@@ -75,6 +79,10 @@
 		034CB63F29D626FD0011751F /* ExpandableGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandableGroup.swift; sourceTree = "<group>"; };
 		03568C9329DBCF3A00FE3F2C /* MaskedImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaskedImage.swift; sourceTree = "<group>"; };
 		03568C9529DBCF5C00FE3F2C /* Transformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transformation.swift; sourceTree = "<group>"; };
+		03E43D1B29DC510A005EF20B /* CompositionEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositionEditor.swift; sourceTree = "<group>"; };
+		03E43D3129DC5C6A005EF20B /* Extract.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extract.swift; sourceTree = "<group>"; };
+		03E43D3229DC5C6A005EF20B /* ExtractMulti.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtractMulti.swift; sourceTree = "<group>"; };
+		03E43D3329DC5C6A005EF20B /* Extractable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extractable.swift; sourceTree = "<group>"; };
 		03F9F9A629D65A3300C91CE3 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		03F9F9A829D66BBB00C91CE3 /* Capture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Capture.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -174,7 +182,9 @@
 		034CB60E29D615B50011751F /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				034CB63629D625D20011751F /* ColorTheme.swift */,
+				03E43D3129DC5C6A005EF20B /* Extract.swift */,
+				03E43D3329DC5C6A005EF20B /* Extractable.swift */,
+				03E43D3229DC5C6A005EF20B /* ExtractMulti.swift */,
 				034CB63929D626570011751F /* Butttons.swift */,
 				034CB62929D624250011751F /* Glow.swift */,
 				034CB62B29D624250011751F /* GodRays.swift */,
@@ -221,9 +231,11 @@
 			isa = PBXGroup;
 			children = (
 				0324E31429D7D79900CCD195 /* Composition.swift */,
+				03E43D1B29DC510A005EF20B /* CompositionEditor.swift */,
 				0324E31329D7D79900CCD195 /* MaskedImageView.swift */,
 				03568C9329DBCF3A00FE3F2C /* MaskedImage.swift */,
 				03568C9529DBCF5C00FE3F2C /* Transformation.swift */,
+				034CB63629D625D20011751F /* ColorTheme.swift */,
 			);
 			path = Composition;
 			sourceTree = "<group>";
@@ -373,6 +385,7 @@
 				034CB61D29D622670011751F /* MaskMaker.swift in Sources */,
 				03F9F9A729D65A3300C91CE3 /* ImagePicker.swift in Sources */,
 				0324E31529D7D8C600CCD195 /* Composition.swift in Sources */,
+				03E43D1C29DC510A005EF20B /* CompositionEditor.swift in Sources */,
 				034CB62F29D624840011751F /* Rainbow.swift in Sources */,
 				0324E31629D7D8CA00CCD195 /* MaskedImageView.swift in Sources */,
 				033B4A3B29D6083A00BC4EF6 /* RayzApp.swift in Sources */,
@@ -380,14 +393,17 @@
 				034CB61E29D6226A0011751F /* DIS08.mlpackage in Sources */,
 				034CB62D29D624810011751F /* Glow.swift in Sources */,
 				034CB63029D624840011751F /* Vignette.swift in Sources */,
+				03E43D3629DC5C6A005EF20B /* Extractable.swift in Sources */,
 				03F9F9A929D66BBB00C91CE3 /* Capture.swift in Sources */,
 				034CB61229D61A590011751F /* Root.swift in Sources */,
+				03E43D3529DC5C6A005EF20B /* Extract.swift in Sources */,
 				034CB62E29D624840011751F /* GodRays.swift in Sources */,
 				03568C9429DBCF3A00FE3F2C /* MaskedImage.swift in Sources */,
 				034CB63A29D626570011751F /* Butttons.swift in Sources */,
 				034CB63729D625D20011751F /* ColorTheme.swift in Sources */,
 				034CB63329D624840011751F /* Particles.swift in Sources */,
 				034CB63129D624840011751F /* CGImage+Trim.swift in Sources */,
+				03E43D3429DC5C6A005EF20B /* ExtractMulti.swift in Sources */,
 				034CB63529D625350011751F /* UIImage+SolidColor.swift in Sources */,
 				034526DA29D629D9006836D0 /* Start.swift in Sources */,
 				034CB63229D624840011751F /* ShareSheet.swift in Sources */,

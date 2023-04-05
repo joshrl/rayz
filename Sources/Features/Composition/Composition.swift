@@ -35,7 +35,7 @@ struct Composition: ReducerProtocol {
         case setColorTheme(ColorTheme)
     }
     
-    var body: some ReducerProtocol<State, Action> {
+    var body: some ReducerOf<Self> {
         
         Reduce { state, action in
             switch (action) {

@@ -9,7 +9,7 @@ import Foundation
 import ComposableArchitecture
 import SwiftUI
 
-struct Composition: ReducerProtocol {
+struct Composition: Reducer {
     
     @Dependency(\.maskMaker) var maskMaker
     @Dependency(\.uuid) var uuid

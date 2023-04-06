@@ -13,7 +13,7 @@ struct CompositionEditor: Reducer {
     
     struct State: Equatable {
         @BindingState var isColorThemePickerOpen: Bool = false
-        var composition: Composition.State
+        @BindingState var composition: Composition.State
     }
     
     enum Action: BindableAction, Equatable {
@@ -50,35 +50,25 @@ struct CompositionEditorView: View {
     
     var body: some View {
         BottomBar {
+            CircularIconButton(source: .system(name: "square")) {}.hidden()
             Spacer()
             colorThemePicker
             Spacer()
+            layerControls
         }
     }
     
-    private func button(_ named: String, action: @escaping () -> Void) -> some View {
-        CircularIconButton(source:
-                .custom(name: named, renderingMode: .original), action: action)
+    private var colorThemePicker: some View {
+        WithViewStore(self.store, observe: { $0 }) { viewStore in
+            ColorThemePicker(
+                isOpen: viewStore.binding(\.$isColorThemePickerOpen),
+                selectedTheme: viewStore.binding(\.$composition.colorTheme))
+        }
     }
     
-    private var colorThemePicker: some View {
-        WithViewStore(self.store, observe: { $0 } ) { viewStore in
-            
-            ExpandableGroup(viewStore.binding(\.$isColorThemePickerOpen)) {
-                button(viewStore.composition.colorTheme.iconImageName) {
-                    viewStore.send(.toggleColorThemePicker, animation: .spring(dampingFraction: 0.5))
-                }
-            } expanded: {
-                ForEach(ColorTheme.all) { item in
-
-                    if (item != viewStore.composition.colorTheme) {
-                        button(item.iconImageName) {
-                            viewStore.send(.setTheme(item), animation: .spring(dampingFraction: 0.6))
-                        }
-                    }
-
-                }
-            }
+    private var layerControls: some View {
+       
+        CircularIconButton(source: .system(name: "square.stack.3d.up")) {
             
         }
         

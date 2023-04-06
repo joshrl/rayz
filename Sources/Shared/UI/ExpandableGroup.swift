@@ -15,7 +15,7 @@ enum ExpandDirection {
 
 struct ExpandableGroup<Toggle: View, ExpandedView: View>: View {
     
-    var isExpanded: Binding<Bool>
+    @Binding var isExpanded: Bool
     let direction: ExpandDirection
     let cellSize: CGFloat
     let toggle: () -> Toggle
@@ -27,7 +27,7 @@ struct ExpandableGroup<Toggle: View, ExpandedView: View>: View {
         cellSize: CGFloat = 95,
         @ViewBuilder toggle: @escaping () -> Toggle,
         @ViewBuilder expanded: @escaping () -> ExpandedView) {
-            self.isExpanded = isExpanded
+            self._isExpanded = isExpanded
             self.direction = direction
             self.cellSize = cellSize
             self.toggle = toggle
@@ -44,7 +44,7 @@ struct ExpandableGroup<Toggle: View, ExpandedView: View>: View {
 
                 ForEach (Array(views.enumerated()), id: \.offset) { index, view in
                     view
-                        .opacity(isExpanded.wrappedValue ? 1 : 0)
+                        .opacity(isExpanded ? 1 : 0)
                         .offset(offset(at: index))
                         
                 }
@@ -56,7 +56,7 @@ struct ExpandableGroup<Toggle: View, ExpandedView: View>: View {
     }
     
     private func offset(at index: Int) -> CGSize {
-        guard isExpanded.wrappedValue else {
+        guard isExpanded else {
             return .zero
         }
         
@@ -75,23 +75,6 @@ struct ExpandableGroup<Toggle: View, ExpandedView: View>: View {
                          height: 0)
             
         }
-        
-    }
-    
-}
-
-
-struct StatefulPreviewWrapper<Value, Content: View>: View {
-    @State var value: Value
-    var content: (Binding<Value>) -> Content
-
-    var body: some View {
-        content($value)
-    }
-
-    init(_ value: Value, content: @escaping (Binding<Value>) -> Content) {
-        self._value = State(wrappedValue: value)
-        self.content = content
     }
 }
 

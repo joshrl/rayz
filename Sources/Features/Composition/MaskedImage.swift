@@ -16,16 +16,9 @@ struct MaskedImage: Equatable, Identifiable {
     var transformation: Transformation
     
     let orientation: UIImage.Orientation
-    var image: CGImage {
-        didSet {
-            // reset transformation everytime image is set
-            transformation = Transformation(size: CGSize(width: image.width, height: image.height))
-        }
-    }
+    let image: CGImage
     let mask: CGImage
-    var maskedImage: CGImage {
-        Self.createMaskedImage(image: image, mask: mask)
-    }
+    let maskedImage: UIImage
     
     init(orientation: UIImage.Orientation, image: CGImage, mask: CGImage, uuid: UUID = UUID()) {
         
@@ -40,9 +33,27 @@ struct MaskedImage: Equatable, Identifiable {
         self.mask = maskCropped
         self.transformation = Transformation(size: CGSize(width: imageCrop.width, height: imageCrop.height))
         self.id = uuid
+        self.maskedImage = Self.createMaskedUIImage(orientation: orientation, image: image, mask: mask)
     }
     
-    private static func createMaskedImage(image: CGImage, mask: CGImage) -> CGImage {
+    private static func createMaskedUIImage(orientation: UIImage.Orientation, image: CGImage, mask: CGImage) -> UIImage {
+        
+        // First create CGImage iwth mask
+        let maskedImage = createMaskedCGImage(image: image, mask: mask)
+        
+        // Now create a UIImage that we will draw into
+        let img = UIImage(cgImage: maskedImage,
+                          scale: UIScreen.main.nativeScale,
+                          orientation: orientation)
+        
+        UIGraphicsBeginImageContext(img.size)
+        img.draw(in: .init(origin: .zero, size: img.size))
+        let resultImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return resultImage ?? UIImage()
+    }
+    
+    private static func createMaskedCGImage(image: CGImage, mask: CGImage) -> CGImage {
         // Create a mask image
         guard let dataProvider = mask.dataProvider else {
             return image

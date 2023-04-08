@@ -18,9 +18,7 @@ struct MaskedImageView: View {
     
     var body: some View {
             
-        Image(uiImage: UIImage(cgImage: layer.maskedImage,
-                               scale: UIScreen.main.nativeScale,
-                               orientation: layer.orientation))
+        Image(uiImage: layer.maskedImage)
         .resizable()
         .aspectRatio(contentMode: .fit)
         .clipped()

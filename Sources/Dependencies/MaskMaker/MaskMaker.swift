@@ -19,19 +19,19 @@ struct MaskMaker {
     }
 
     static func createMask(from input: CGImage) async throws -> CGImage {
-        logger.debug("starting bg removal")
+        logger.info("starting bg removal")
         let model = try await DIS08.load()
 
-        logger.debug("model loaded")
+        logger.info("model loaded")
         let result = try model.prediction(input: DIS08Input(x_1With: input))
-        logger.debug("prediction made")
+        logger.info("prediction made")
         
-        guard let inverted = inverted(from: result.activation_out) else {
-            throw MaskError.failedToInvert
-        }
+        let output0 = inverted(from: result.activation_out)
+        let output1 =  increaseContrast(image: output0)
+        let processed = sharpen(image: output1)
         
         let context = CIContext()
-        guard let mask = context.createCGImage(inverted, from: inverted.extent) else {
+        guard let mask = context.createCGImage(processed, from: processed.extent) else {
             throw MaskError.failedToCreateCoreGraphicsImage
         }
         
@@ -39,13 +39,18 @@ struct MaskMaker {
     }
     
     
-    private static func inverted(from pixelBuffer: CVPixelBuffer) -> CIImage? {
-        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-        guard let filter = CIFilter(name: "CIColorInvert") else { return nil }
-        filter.setDefaults()
-        filter.setValue(ciImage, forKey: kCIInputImageKey)
-        return filter.outputImage
+    private static func inverted(from pixelBuffer: CVPixelBuffer) -> CIImage {
+        CIImage(cvPixelBuffer: pixelBuffer).applyingFilter("CIColorInvert", parameters: [:])
     }
+    
+    private static func increaseContrast(image: CIImage) -> CIImage {
+        image.applyingFilter("CIColorControls", parameters: ["inputContrast": 2.0])
+    }
+    
+    private static func sharpen(image: CIImage) -> CIImage {
+        image.applyingFilter("CIUnsharpMask", parameters: [:])
+    }
+    
     
 }
 

@@ -10,25 +10,40 @@ import CoreImage
 import OSLog
 
 
-struct MaskMaker {
-    static let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "", category: "👻")
-
+actor MaskMaker {
+    
+    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "", category: "👻")
+    private var model: DIS08?
+    
     enum MaskError: Error {
-        case failedToInvert
+        case notLoaded
         case failedToCreateCoreGraphicsImage
     }
+    
+    func preheat() async -> Void {
+        logger.info("preheating bg removal start")
+        model = try? await DIS08.load()
+        logger.info("preheating bg removal done")
+    }
 
-    static func createMask(from input: CGImage) async throws -> CGImage {
+    func createMask(from input: CGImage) async throws -> CGImage {
+        
+        logger.info("creating mask")
+        let resolved: DIS08
+        
+        // Because we are an actor, access to self.model will be serialized and preheat will happen first..(if called)
+        if let model {
+            resolved = model
+        } else {
+            resolved = try await DIS08.load()
+        }
         logger.info("starting bg removal")
-        let model = try await DIS08.load()
-
-        logger.info("model loaded")
-        let result = try model.prediction(input: DIS08Input(x_1With: input))
+        let result = try resolved.prediction(input: DIS08Input(x_1With: input))
         logger.info("prediction made")
         
-        let output0 = inverted(from: result.activation_out)
-        let output1 =  increaseContrast(image: output0)
-        let processed = sharpen(image: output1)
+        let output0 = Self.inverted(from: result.activation_out)
+        let output1 =  Self.increaseContrast(image: output0)
+        let processed = Self.sharpen(image: output1)
         
         let context = CIContext()
         guard let mask = context.createCGImage(processed, from: processed.extent) else {
@@ -37,7 +52,6 @@ struct MaskMaker {
         
         return mask
     }
-    
     
     private static func inverted(from pixelBuffer: CVPixelBuffer) -> CIImage {
         CIImage(cvPixelBuffer: pixelBuffer).applyingFilter("CIColorInvert", parameters: [:])

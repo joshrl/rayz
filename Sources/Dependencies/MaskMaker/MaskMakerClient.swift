@@ -11,21 +11,27 @@ import CoreImage
 import ComposableArchitecture
 
 struct MaskMakerClient {
+    var preheat: @Sendable () async -> Void
     var createMask: @Sendable (CGImage) async throws -> CGImage
 }
 
 extension MaskMakerClient: DependencyKey {
     
     static var liveValue: Self {
+        let maskMaker = MaskMaker()
         return Self(
+            preheat: {
+                await maskMaker.preheat()
+            },
             createMask: { input in
-                return try await MaskMaker.createMask(from: input)
+                return try await maskMaker.createMask(from: input)
             }
         )
     }
     
     static var previewValue: Self {
         return Self(
+            preheat: { },
             createMask: { input in
                 return input
             }
@@ -34,6 +40,7 @@ extension MaskMakerClient: DependencyKey {
     
     static var testValue: Self {
         return Self(
+            preheat: { },
             createMask: { input in
                 return input
             }

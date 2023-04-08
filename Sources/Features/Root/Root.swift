@@ -17,6 +17,8 @@ struct Root: Reducer {
     
     let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "-", category: "🦷")
     
+    @Dependency(\.maskMaker) var maskMaker
+
     struct State: Equatable {
         var start: Start.State? = Start.State()
         
@@ -54,6 +56,10 @@ struct Root: Reducer {
             case .start(.delegate(.captureButtonTapped)):
                 state.capture = Capture.State()
                 return .none
+            case .start(.onAppear):
+                return .fireAndForget {
+                    await maskMaker.preheat()
+                }
             case .start:
                 return .none
             

@@ -19,6 +19,7 @@ struct Composition: Reducer {
 
     struct State: Equatable {
         var isMasking: Bool = false
+        var isTransforming: Bool = false
         var colorTheme: ColorTheme = .blues
         var maskedImageLayers: IdentifiedArrayOf<MaskedImage> = []
         // Future: BG
@@ -63,7 +64,8 @@ struct Composition: Reducer {
                                              mask: mask,
                                              uuid: uuid())
                 state.maskedImageLayers.append(layer)
-                return .none
+                state.isMasking = false
+                return .none.animation()
             case .transformMaskedImage(id: let image,
                                        offset: let offset,
                                        magification: let magification,
@@ -78,9 +80,11 @@ struct Composition: Reducer {
                 if let rotation {
                     state.maskedImageLayers[id: image]?.transformation.updateRotation(rotation)
                 }
+                state.isTransforming = true
                 return .none
             case .transformMaskedImageDone(let image):
                 state.maskedImageLayers[id: image]?.transformation.endUpdate()
+                state.isTransforming = false
                 return .none
             case .setColorTheme(let theme):
                 state.colorTheme = theme
@@ -102,9 +106,18 @@ struct CompositionView: View {
             GlowGroup(store) {
                 maskedImages
             }
+            loading
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         
+    }
+    
+    private var loading: some View {
+        WithViewStore(self.store, observe: \.isMasking) { viewStore in
+            if viewStore.state {
+                LoaderView()
+            }
+        }
     }
     
     private var godrays: some View {
@@ -133,25 +146,29 @@ struct CompositionView: View {
         let content: () -> Content
         let store: StoreOf<Composition>
 
+        private struct ViewState: Equatable {
+            let theme: ColorTheme
+            let isTransforming: Bool
+        }
+        
         init(_ store: StoreOf<Composition>, @ViewBuilder content: @escaping () -> Content) {
             self.content = content
             self.store = store
         }
         
         var body: some View {
-            WithViewStore(self.store, observe: \.colorTheme) { viewStore in
-                
+            WithViewStore(self.store, observe: {
+                ViewState(
+                    theme: $0.colorTheme,
+                    isTransforming: $0.isTransforming
+                )
+            }) { viewStore in
+
                 Group {
                     content()
-                }
-                // NOTE: neither drawingGroup() nor compositingGroup() here does quite doing what we
-                // want for masked images which is to merge everything into a single group that has
-                // the glow applied (will have to come back to this -- it may involve CGImage or
-                // CIImage compositing). For now, glow is applied to each masked image
-                .glow(color: viewStore.glowColor)
+                }.compositingGroup().glow(color: viewStore.theme.glowColor)
 
             }
-            
             
         }
     }

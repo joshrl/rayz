@@ -12,6 +12,7 @@ import ComposableArchitecture
 struct LayerControls: View {
     
     @Binding var isExpanded: Bool
+    @Binding var composition: Composition.State
     var didTapAddImage: () -> Void
     
     var body: some View {
@@ -30,14 +31,23 @@ struct LayerControls: View {
                 didTapAddImage()
             }
             
+            // Add button for each layer here...
+            ForEach(composition.maskedImageLayers) { layer in
+                CircularIconButton(source: .image(Image(uiImage: layer.maskedImage))) {
+                    
+                }
+            }
+            
         }
     }
 }
 
 struct LayerControls_Previews: PreviewProvider {
     static var previews: some View {
-        StatefulPreviewWrapper(false) { expanded in
-            LayerControls(isExpanded: expanded) { }
+        StatefulPreviewWrapper((false, Composition.State())) { value in
+            LayerControls(isExpanded: value.0,
+                          composition: value.1
+            ) { }
         }
     }
 }

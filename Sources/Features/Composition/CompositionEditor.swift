@@ -104,7 +104,9 @@ struct CompositionEditorView: View {
     
     private var layerControls: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
-            LayerControls(isExpanded: viewStore.binding(\.$isLayerControlsOpen)) {
+            LayerControls(isExpanded: viewStore.binding(\.$isLayerControlsOpen),
+                          composition: viewStore.binding(\.$composition)
+            ) {
                 viewStore.send(.startCapture)
             }
         }

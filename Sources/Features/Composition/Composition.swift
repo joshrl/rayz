@@ -60,9 +60,9 @@ struct Composition: Reducer {
                 return .cancel(id: CancelId.masking)
             case .addMaskedImage(image: let image, mask: let mask, orientation: let orientation):
                 let layer = MaskedImage(orientation: orientation,
-                                             image: image,
-                                             mask: mask,
-                                             uuid: uuid())
+                                        image: image,
+                                        mask: mask,
+                                        uuid: uuid())
                 state.maskedImageLayers.append(layer)
                 state.isMasking = false
                 return .none.animation()

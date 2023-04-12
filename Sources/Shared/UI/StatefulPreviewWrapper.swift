@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-// For previews
+// For previews (makes views with bindings previewable by holding a state value)
 struct StatefulPreviewWrapper<Value, Content: View>: View {
     @State var value: Value
     var content: (Binding<Value>) -> Content

@@ -11,11 +11,16 @@ import SwiftUI
 
 struct CompositionEditor: Reducer {
     
+    enum ExpandedMenu {
+        case colorThemePicker
+        case layerControls
+        case none
+    }
+    
     struct State: Equatable {
-        @BindingState var isColorThemePickerOpen: Bool = false
-        @BindingState var isLayerControlsOpen: Bool = false
         @BindingState var composition: Composition.State
         @PresentationState var capture: Capture.State? = nil
+        @BindingState var expandedMenu: ExpandedMenu = .none
     }
     
     enum Action: BindableAction, Equatable {
@@ -23,6 +28,7 @@ struct CompositionEditor: Reducer {
         case composition(Composition.Action)
         case setTheme(ColorTheme)
         case toggleColorThemePicker
+        case toggleLayerControls
         case startCapture
         case capture(PresentationAction<Capture.Action>)
     }
@@ -39,10 +45,15 @@ struct CompositionEditor: Reducer {
             // Set Color Theme
             case .setTheme(let theme):
                 state.composition.colorTheme = theme
-                state.isColorThemePickerOpen = false
+                state.expandedMenu = .none
                 return .none
             case .toggleColorThemePicker:
-                state.isColorThemePickerOpen.toggle()
+                state.expandedMenu = state.expandedMenu == .colorThemePicker ? .none : .colorThemePicker
+                return .none
+                
+            // Layer Controls
+            case .toggleLayerControls:
+                state.expandedMenu = state.expandedMenu == .layerControls ? .none : .layerControls
                 return .none
                 
             // Capture
@@ -96,19 +107,13 @@ struct CompositionEditorView: View {
     
     private var colorThemePicker: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
-            ColorThemePicker(
-                isOpen: viewStore.binding(\.$isColorThemePickerOpen),
-                selectedTheme: viewStore.binding(\.$composition.colorTheme))
+            ColorThemePicker(store: store)
         }
     }
     
     private var layerControls: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
-            LayerControls(isExpanded: viewStore.binding(\.$isLayerControlsOpen),
-                          composition: viewStore.binding(\.$composition)
-            ) {
-                viewStore.send(.startCapture)
-            }
+            LayerControls(store: self.store)
         }
     }
     
@@ -120,11 +125,9 @@ struct CompositionEditorView_Previews: PreviewProvider {
         .State(composition: Composition.State())
     
     static var previews: some View {
-        
-        
-        CompositionEditorView(store: Store(
-            initialState: initialState,
-            reducer: CompositionEditor())
+        CompositionEditorView(store:
+                                Store(initialState: initialState,
+                                      reducer: CompositionEditor())
         )
     }
 }

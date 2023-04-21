@@ -5,30 +5,38 @@
 //  Created by Josh on 4/5/23.
 //
 
+import ComposableArchitecture
 import Foundation
 import SwiftUI
 
 struct ColorThemePicker: View {
     
-    @Binding var isOpen: Bool
-    @Binding var selectedTheme: ColorTheme
+    var store: StoreOf<CompositionEditor>
     
+    private struct ViewState: Equatable {
+        let selectedTheme: ColorTheme
+        let expandedMenu: CompositionEditor.ExpandedMenu
+    }
+
     var body: some View {
-        ExpandableGroup($isOpen) {
-            button(selectedTheme.iconImageName) {
-                withAnimation(.spring(dampingFraction: 0.5)) {
-                    isOpen.toggle()
+        WithViewStore(store, observe: {
+            ViewState(selectedTheme: $0.composition.colorTheme,
+                      expandedMenu: $0.expandedMenu)
+        }) { viewStore in
+            
+            let selectedTheme = viewStore.selectedTheme
+            ExpandableGroup(viewStore.expandedMenu == .colorThemePicker) {
+                button(selectedTheme.iconImageName) {
+                    viewStore.send(.toggleColorThemePicker,
+                                   animation:.spring(dampingFraction: 0.5))
                 }
-            }
-        } expanded: {
-            ForEach(ColorTheme.all) { item in
-                if (item != selectedTheme) {
-                    button(item.iconImageName) {
-                        withAnimation(.spring(dampingFraction: 0.5)) {
-                            isOpen = false
+            } expanded: {
+                ForEach(ColorTheme.all) { item in
+                    if (item != selectedTheme) {
+                        button(item.iconImageName) {
+                            viewStore.send(.setTheme(item),
+                                           animation:.easeOut)
                         }
-                        
-                        selectedTheme = item
                     }
                 }
             }
@@ -43,11 +51,15 @@ struct ColorThemePicker: View {
 }
 
 struct ColorThemePicker_Previews: PreviewProvider {
+    
+    static let initialState = CompositionEditor
+        .State(composition: Composition.State())
+    
     static var previews: some View {
-       
-        StatefulPreviewWrapper((false, ColorTheme.default)) { value in
-            ColorThemePicker(isOpen: value.0, selectedTheme: value.1)
-        }
+        
+        ColorThemePicker(store:Store(initialState: initialState,
+                                     reducer: CompositionEditor())
+        )
     }
 }
 

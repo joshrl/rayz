@@ -120,9 +120,21 @@ struct CompositionView: View {
         }
     }
     
+    struct GodRayState: Equatable {
+        let colors: [Color]
+        let isLoading: Bool
+        
+        init(state: Composition.State) {
+            colors = state.colorTheme.rayColors
+            isLoading = state.isMasking
+        }
+    }
+    
     private var godrays: some View {
-        WithViewStore(self.store, observe: \.colorTheme) { viewStore in
-            GodRays(colors: viewStore.state.rayColors)
+
+        WithViewStore(self.store, observe: { GodRayState(state: $0) }) { viewStore in
+            GodRays(colors: viewStore.state.colors,
+                    rotationStyle: viewStore.state.isLoading ? .ticking : .smooth)
         }
     }
     

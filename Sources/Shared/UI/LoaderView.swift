@@ -56,7 +56,7 @@ private struct LoadingText: View {
 struct LoaderView_Previews: PreviewProvider {
     static var previews: some View {
         ZStack {
-            GodRays(colors: ColorTheme.blues.rayColors,
+            GodRays(colors: ColorTheme.pride.rayColors,
                     rotationStyle:.ticking)
             LoaderView()
         }

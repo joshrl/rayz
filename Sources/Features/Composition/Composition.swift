@@ -158,27 +158,17 @@ struct CompositionView: View {
         let content: () -> Content
         let store: StoreOf<Composition>
 
-        private struct ViewState: Equatable {
-            let theme: ColorTheme
-            let isTransforming: Bool
-        }
-        
         init(_ store: StoreOf<Composition>, @ViewBuilder content: @escaping () -> Content) {
             self.content = content
             self.store = store
         }
         
         var body: some View {
-            WithViewStore(self.store, observe: {
-                ViewState(
-                    theme: $0.colorTheme,
-                    isTransforming: $0.isTransforming
-                )
-            }) { viewStore in
+            WithViewStore(self.store, observe: \.colorTheme) { viewStore in
 
                 Group {
                     content()
-                }.compositingGroup().glow(color: viewStore.theme.glowColor)
+                }.glow(color: viewStore.state.glowColor)
 
             }
             

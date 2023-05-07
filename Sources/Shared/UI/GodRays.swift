@@ -36,7 +36,7 @@ public struct GodRays: View {
     
     public var body: some View {
         
-        TimelineView(.animation) { context in
+        TimelineView(.animation(minimumInterval: 1.0/30.0)) { context in
             let date = context.date
             
             let update = self.smooth ?

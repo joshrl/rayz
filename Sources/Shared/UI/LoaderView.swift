@@ -14,36 +14,51 @@ struct LoaderView: View {
     let startDate = Date()
     
     var body: some View {
-        ZStack {
+        TimelineView(.animation) { context in
             
-            Capsule()
-                .stroke(.white, lineWidth: 6)
-                .frame(width: 200, height: 60.0)
-                .glow(color: .white)
-            
-            Capsule()
-                .foregroundColor(.white.opacity(0.95))
-                .rainbowAnimation()
-                //.blur(radius: 5)
-                .frame(width: 200, height: 60.0)
-            
-//            ProgressView()
-//                .tint(.black)
-//                .scaleEffect(x: 2, y: 2, anchor: .center)
-                
-            Text("loading...").font(.system(.body, design: .monospaced)).glow(color: .white)
-            
+            let seconds = seconds(for: context.date)
+            ZStack {
+                LoadingText(tick: seconds)
+            }.frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        
-        
+    }
+    
+    private func seconds(for date: Date) -> Double {
+        let seconds = Calendar.current.component(.second, from: date)
+        return Double(seconds) / 60
+    }
+    
+}
+
+private struct LoadingText: View {
+    
+    var tick: Double
+    @State var scale: CGFloat =  1.0
+    var body: some View {
+            
+        Group {
+            Image("image.loading-bg")
+                .rainbowAnimation()
+            Image("image.loading-fg")
+                .foregroundColor(.black)
+        }.onChange(of: tick) { _ in
+            Task {
+                scale = 1.5
+                try? await Task.sleep(for:.milliseconds(100))
+                scale = 1.3
+            }
+        }
+        .scaleEffect(scale)
+        .animation(.easeInOut(duration: 0.3), value: scale)
     }
 }
 
 struct LoaderView_Previews: PreviewProvider {
     static var previews: some View {
         ZStack {
-           LoaderView()
-        }.background(.red)
+            GodRays(colors: ColorTheme.pride.rayColors,
+                    rotationStyle:.ticking)
+            LoaderView()
+        }
     }
 }

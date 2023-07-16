@@ -10,34 +10,47 @@ import SwiftUI
 import ComposableArchitecture
 
 struct LayerControls: View {
-    
-    @Binding var isExpanded: Bool
-    var didTapAddImage: () -> Void
+   
+    var store: StoreOf<CompositionEditor>
     
     var body: some View {
-        ExpandableGroup($isExpanded) {
-            CircularIconButton(source: .system(name: "square.stack.3d.up")) {
-                withAnimation(.spring(dampingFraction: 0.5)) {
-                    isExpanded.toggle()
-                }
-            }
-        } expanded: {
-            CircularIconButton(source: .custom(name: "icon.camera.plus"),
-                               imageOffset: .init(width: 4, height: 0)) {
-                withAnimation(.spring(dampingFraction: 0.5)) {
-                    isExpanded = false
-                }
-                didTapAddImage()
-            }
+        WithViewStore(store, observe: { $0 }) { viewStore in
             
+            let menuState = viewStore.state.expandedMenu
+            let layers = viewStore.state.composition.maskedImageLayers
+            ExpandableGroup(menuState == .layerControls) {
+                CircularIconButton(source: .system(name: "square.stack.3d.up")) {
+                    viewStore.send(.toggleLayerControls,
+                                   animation:.spring(dampingFraction: 0.5))
+                }
+            } expanded: {
+                CircularIconButton(source: .custom(name: "icon.camera.plus"),
+                                   imageOffset: .init(width: 4, height: 0)) {
+                    viewStore.send(.startCapture, animation: .easeOut)
+                }
+                
+                // Add button for each layer here...
+                ForEach(layers) { layer in
+                    CircularIconButton(source: .image(Image(uiImage: layer.maskedImage))) {
+                        
+                    }
+                }
+                
+            }
         }
+
     }
 }
 
 struct LayerControls_Previews: PreviewProvider {
+    
+    static let initialState = CompositionEditor
+        .State(composition: Composition.State())
+    
     static var previews: some View {
-        StatefulPreviewWrapper(false) { expanded in
-            LayerControls(isExpanded: expanded) { }
-        }
+        
+        LayerControls(store:Store(initialState: initialState,
+                                  reducer: CompositionEditor())
+        )
     }
 }

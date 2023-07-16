@@ -15,19 +15,19 @@ enum ExpandDirection {
 
 struct ExpandableGroup<Toggle: View, ExpandedView: View>: View {
     
-    @Binding var isExpanded: Bool
+    var isExpanded: Bool
     let direction: ExpandDirection
     let cellSize: CGFloat
     let toggle: () -> Toggle
     let expandedContent: () -> ExpandedView
     
     init(
-        _ isExpanded: Binding<Bool>,
+        _ isExpanded: Bool,
         direction: ExpandDirection = .up,
         cellSize: CGFloat = 95,
         @ViewBuilder toggle: @escaping () -> Toggle,
         @ViewBuilder expanded: @escaping () -> ExpandedView) {
-            self._isExpanded = isExpanded
+            self.isExpanded = isExpanded
             self.direction = direction
             self.cellSize = cellSize
             self.toggle = toggle
@@ -80,6 +80,7 @@ struct ExpandableGroup<Toggle: View, ExpandedView: View>: View {
 
 struct ExpandableGroup_Previews: PreviewProvider {
     
+    
     static var previews: some View {
         
         VStack {
@@ -120,7 +121,7 @@ struct ExpandableGroup_Previews: PreviewProvider {
         
         StatefulPreviewWrapper(false) { isOpen in
             
-            ExpandableGroup(isOpen, direction: dir, cellSize: cellSize) {
+            ExpandableGroup(isOpen.wrappedValue, direction: dir, cellSize: cellSize) {
                 Button(action: {
                     withAnimation {
                         isOpen.wrappedValue.toggle()

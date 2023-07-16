@@ -9,45 +9,43 @@ import Foundation
 import CoreImage
 import OSLog
 
-
 actor MaskMaker {
     
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "", category: "👻")
     private var model: DIS08?
     
-    enum MaskError: Error {
-        case notLoaded
-        case failedToCreateCoreGraphicsImage
-    }
+    struct MaskError: Error {}
     
     func preheat() async -> Void {
         logger.info("preheating bg removal start")
         model = try? await DIS08.load()
-        logger.info("preheating bg removal done")
+        logger.info("model preheated!")
     }
 
     func createMask(from input: CGImage) async throws -> CGImage {
         
         logger.info("creating mask")
         let resolved: DIS08
-        
-        // Because we are an actor, access to self.model will be serialized and preheat will happen first..(if called)
-        if let model {
+        if let model = self.model {
+            // Access to self.model will block if we are "preheating"...
             resolved = model
         } else {
+            // Otherwise, create a new model
             resolved = try await DIS08.load()
         }
         logger.info("starting bg removal")
         let result = try resolved.prediction(input: DIS08Input(x_1With: input))
         logger.info("prediction made")
         
+        // Process the mask...
         let output0 = Self.inverted(from: result.activation_out)
         let output1 =  Self.increaseContrast(image: output0)
         let processed = Self.sharpen(image: output1)
         
         let context = CIContext()
         guard let mask = context.createCGImage(processed, from: processed.extent) else {
-            throw MaskError.failedToCreateCoreGraphicsImage
+            // Not sure if this will every really happen, but need to throw something...
+            throw MaskError()
         }
         
         return mask

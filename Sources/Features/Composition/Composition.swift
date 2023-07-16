@@ -60,9 +60,9 @@ struct Composition: Reducer {
                 return .cancel(id: CancelId.masking)
             case .addMaskedImage(image: let image, mask: let mask, orientation: let orientation):
                 let layer = MaskedImage(orientation: orientation,
-                                             image: image,
-                                             mask: mask,
-                                             uuid: uuid())
+                                        image: image,
+                                        mask: mask,
+                                        uuid: uuid())
                 state.maskedImageLayers.append(layer)
                 state.isMasking = false
                 return .none.animation()
@@ -120,9 +120,21 @@ struct CompositionView: View {
         }
     }
     
+    struct GodRayState: Equatable {
+        let colors: [Color]
+        let isLoading: Bool
+        
+        init(state: Composition.State) {
+            colors = state.colorTheme.rayColors
+            isLoading = state.isMasking
+        }
+    }
+    
     private var godrays: some View {
-        WithViewStore(self.store, observe: \.colorTheme) { viewStore in
-            GodRays(colors: viewStore.state.rayColors)
+
+        WithViewStore(self.store, observe: { GodRayState(state: $0) }) { viewStore in
+            GodRays(colors: viewStore.state.colors,
+                    rotationStyle: viewStore.state.isLoading ? .ticking : .smooth)
         }
     }
     
@@ -146,27 +158,17 @@ struct CompositionView: View {
         let content: () -> Content
         let store: StoreOf<Composition>
 
-        private struct ViewState: Equatable {
-            let theme: ColorTheme
-            let isTransforming: Bool
-        }
-        
         init(_ store: StoreOf<Composition>, @ViewBuilder content: @escaping () -> Content) {
             self.content = content
             self.store = store
         }
         
         var body: some View {
-            WithViewStore(self.store, observe: {
-                ViewState(
-                    theme: $0.colorTheme,
-                    isTransforming: $0.isTransforming
-                )
-            }) { viewStore in
+            WithViewStore(self.store, observe: \.colorTheme) { viewStore in
 
                 Group {
                     content()
-                }.compositingGroup().glow(color: viewStore.theme.glowColor)
+                }.glow(color: viewStore.state.glowColor)
 
             }
             

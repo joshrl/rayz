@@ -90,8 +90,14 @@ struct CapsuleIcon: View {
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .offset(imageOffset)
-                case .image(let name):
+                case .asset(let name):
                     Image(name)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .offset(imageOffset)
+                        .glow(color: .white)
+                case .image(let image):
+                    image
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .offset(imageOffset)
@@ -112,7 +118,8 @@ struct CircleIcon: View {
     enum Source {
         case system(name: String, renderingMode: Image.TemplateRenderingMode = .template)
         case custom(name: String, renderingMode: Image.TemplateRenderingMode = .template, bundle: Bundle? = nil)
-        case image(name: String)
+        case asset(name: String)
+        case image(Image)
     }
     
     let source: Source
@@ -146,8 +153,15 @@ struct CircleIcon: View {
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .offset(imageOffset)
-                case .image(let name):
+                case .asset(let name):
                     Image(name)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .offset(imageOffset)
+                        .glow(color: .white)
+                case .image(let image):
+                    
+                    image
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .offset(imageOffset)

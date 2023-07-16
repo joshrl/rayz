@@ -18,8 +18,9 @@ struct Root: Reducer {
     let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "-", category: "🦷")
     
     @Dependency(\.maskMaker) var maskMaker
-
+    
     struct State: Equatable {
+        
         var start: Start.State? = Start.State()
         
         // This is a bit of a bait and switch here.
@@ -39,6 +40,7 @@ struct Root: Reducer {
         var editor: CompositionEditor.State? = nil
         
         @PresentationState var capture: Capture.State? = nil
+        
     }
     
     enum Action: Equatable {

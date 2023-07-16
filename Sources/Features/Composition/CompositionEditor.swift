@@ -11,11 +11,16 @@ import SwiftUI
 
 struct CompositionEditor: Reducer {
     
+    enum ExpandedMenu {
+        case colorThemePicker
+        case layerControls
+        case none
+    }
+    
     struct State: Equatable {
-        @BindingState var isColorThemePickerOpen: Bool = false
-        @BindingState var isLayerControlsOpen: Bool = false
         @BindingState var composition: Composition.State
         @PresentationState var capture: Capture.State? = nil
+        @BindingState var expandedMenu: ExpandedMenu = .none
     }
     
     enum Action: BindableAction, Equatable {
@@ -23,6 +28,7 @@ struct CompositionEditor: Reducer {
         case composition(Composition.Action)
         case setTheme(ColorTheme)
         case toggleColorThemePicker
+        case toggleLayerControls
         case startCapture
         case capture(PresentationAction<Capture.Action>)
     }
@@ -39,10 +45,15 @@ struct CompositionEditor: Reducer {
             // Set Color Theme
             case .setTheme(let theme):
                 state.composition.colorTheme = theme
-                state.isColorThemePickerOpen = false
+                state.expandedMenu = .none
                 return .none
             case .toggleColorThemePicker:
-                state.isColorThemePickerOpen.toggle()
+                state.expandedMenu = state.expandedMenu == .colorThemePicker ? .none : .colorThemePicker
+                return .none
+                
+            // Layer Controls
+            case .toggleLayerControls:
+                state.expandedMenu = state.expandedMenu == .layerControls ? .none : .layerControls
                 return .none
                 
             // Capture
@@ -78,39 +89,116 @@ struct CompositionEditorView: View {
     var store: StoreOf<CompositionEditor>
     
     var body: some View {
-        BottomBar {
-            CircularIconButton(source: .system(name: "square")) {}.hidden()
-            Spacer()
-            colorThemePicker
-            Spacer()
-            layerControls
+        
+        ZStack {
+            BottomBar {
+                shareMenu
+                Spacer()
+                colorMenu
+                Spacer()
+                layerMenu
+            }
+            .fullScreenCover(
+              store: self.store.scope(
+                state: \.$capture,
+                action: CompositionEditor.Action.capture)
+            ) { store in
+              CaptureView(store: store)
+            }
         }
-        .fullScreenCover(
-          store: self.store.scope(
-            state: \.$capture,
-            action: CompositionEditor.Action.capture)
-        ) { store in
-          CaptureView(store: store)
+
+
+    }
+    
+    private var colorMenu: some View {
+        WithViewStore(self.store, observe: { $0 }) { viewStore in
+            ColorThemePicker(store: store)
         }
     }
     
-    private var colorThemePicker: some View {
+    private var layerMenu: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
-            ColorThemePicker(
-                isOpen: viewStore.binding(\.$isColorThemePickerOpen),
-                selectedTheme: viewStore.binding(\.$composition.colorTheme))
+            LayerControls(store: self.store)
         }
     }
-    
-    private var layerControls: some View {
-        WithViewStore(self.store, observe: { $0 }) { viewStore in
-            LayerControls(isExpanded: viewStore.binding(\.$isLayerControlsOpen)) {
-                viewStore.send(.startCapture)
+
+    @MainActor
+    private var shareMenu: some View {
+        
+        // Share Button
+        CircularIconButton(source: .system(name: "square.and.arrow.up"), imageOffset: .init(width: 0, height: -3)) {
+            
+            let exporter = ExporterView(content: exportedComposition)
+            
+            Task {
+                await exporter.capture()
             }
         }
     }
     
+    private var exportedComposition: some View {
+        WithViewStore(self.store, observe: \.composition) { viewStore in
+            
+            let size = UIScreen.main.bounds.size
+
+            CompositionView(store:
+                                Store(initialState: viewStore.state,
+                                      reducer: Composition()))
+            // Clip to bounds
+            .frame(width: size.width, height: size.height)
+            .clipped()
+            // Clip to square
+            .frame(width: size.width, height: size.width)
+            .clipped()
+        }
+    }
+    
 }
+
+@MainActor
+class ExporterView<Content: View> {
+    
+    var renderer: ImageRenderer<Content>
+    
+    init(content: Content) {
+        self.renderer = ImageRenderer(content: content)
+    }
+
+    func capture() async {
+        
+        print("\(Date()): Start")
+
+        let _ = renderer.uiImage
+        
+        let handle = renderer.objectWillChange.receive(on: DispatchQueue.main).sink { [renderer = renderer] _ in
+            print("\(Date.timeIntervalSinceReferenceDate): Rendered image changed")
+            let _ = renderer.uiImage
+        }
+        
+        try? await Task.sleep(for: .seconds(1))
+        handle.cancel()
+        print("\(Date()): Done")
+        
+        
+    }
+    
+    
+//    var body: some View {
+//        HStack {
+//            renderer.content
+//        }
+//        .onReceive(renderer.objectWillChange) {
+//            _ = renderer.uiImage
+//            print("\(Date()): Rendered image changed")
+//        }
+//        .onAppear {
+//            _ = renderer.uiImage
+//        }
+//    }
+    
+
+}
+
 
 struct CompositionEditorView_Previews: PreviewProvider {
     
@@ -118,11 +206,9 @@ struct CompositionEditorView_Previews: PreviewProvider {
         .State(composition: Composition.State())
     
     static var previews: some View {
-        
-        
-        CompositionEditorView(store: Store(
-            initialState: initialState,
-            reducer: CompositionEditor())
+        CompositionEditorView(store:
+                                Store(initialState: initialState,
+                                      reducer: CompositionEditor())
         )
     }
 }

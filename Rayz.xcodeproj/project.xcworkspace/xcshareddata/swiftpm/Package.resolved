@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/combine-schedulers",
       "state" : {
-        "revision" : "882ac01eb7ef9e36d4467eb4b1151e74fcef85ab",
-        "version" : "0.9.1"
+        "revision" : "0625932976b3ae23949f6b816d13bd97f3b40b7c",
+        "version" : "0.10.0"
       }
     },
     {
@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-clocks",
       "state" : {
-        "revision" : "20b25ca0dd88ebfb9111ec937814ddc5a8880172",
-        "version" : "0.2.0"
+        "revision" : "f9acfa1a45f4483fe0f2c434a74e6f68f865d12d",
+        "version" : "0.3.0"
       }
     },
     {
@@ -42,7 +42,7 @@
       "location" : "https://github.com/pointfreeco/swift-composable-architecture",
       "state" : {
         "branch" : "prerelease/1.0",
-        "revision" : "fc17996ded63b136741ab2e0c0e0d549a8486adc"
+        "revision" : "f18a72c2dfdc6aecc82e06fed2333bae1cf9a095"
       }
     },
     {
@@ -50,8 +50,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-custom-dump",
       "state" : {
-        "revision" : "805c57f32a5934ee420f30ba129f00aa8c7575a1",
-        "version" : "0.10.0"
+        "revision" : "3a35f7892e7cf6ba28a78cd46a703c0be4e0c6dc",
+        "version" : "0.11.0"
       }
     },
     {
@@ -59,8 +59,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-dependencies",
       "state" : {
-        "revision" : "0f34848e741315119703b1990e5c962929ed5dff",
-        "version" : "0.3.0"
+        "revision" : "de1a984a71e51f6e488e98ce3652035563eb8acb",
+        "version" : "0.5.1"
       }
     },
     {
@@ -77,8 +77,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swiftui-navigation",
       "state" : {
-        "revision" : "47dd574b900ba5ba679f56ea00d4d282fc7305a6",
-        "version" : "0.7.1"
+        "revision" : "2aa885e719087ee19df251c08a5980ad3e787f12",
+        "version" : "0.8.0"
       }
     },
     {

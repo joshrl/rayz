@@ -16,7 +16,9 @@ struct Start: Reducer {
     
     //private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "-", category: "🏁")
 
-    enum CancelID {}
+    enum CancelID {
+        case animation
+    }
 
     struct State: Equatable {
         var glowAppearAnimation: Animation = .start
@@ -59,7 +61,7 @@ struct Start: Reducer {
                     
                 }
                 
-                .cancellable(id: CancelID.self)
+                .cancellable(id: CancelID.animation)
             case .setTextAnimation(let anim):
                 state.textAppearAnimation = anim
                 return .none
